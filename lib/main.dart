@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screen/activity_screen.dart';
+import 'screen/details_screen.dart';
 import 'screen/my_screen.dart';
 import 'screen/news_screen.dart';
 import 'screen/school_screen.dart';
@@ -15,7 +16,11 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.white,
         appBarTheme: AppBarTheme(elevation: 0),
       ),
-      home: MyHomePage(),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => MyHomePage(),
+        "details": (context) => DetailsScreen(),
+      },
     );
   }
 }
