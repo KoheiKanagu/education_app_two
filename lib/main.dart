@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'components/category_card.dart';
-import 'components/my_alert_dialog.dart';
-import 'components/topic_card.dart';
+import 'screen/activity_screen.dart';
+import 'screen/my_screen.dart';
+import 'screen/news_screen.dart';
+import 'screen/school_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,71 +20,75 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => MyHomePageState();
+}
+
+class MyHomePageState extends State<MyHomePage> {
+  int currentIndex = 1;
+  PageController pageController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    this.pageController = PageController(
+      initialPage: currentIndex,
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    this.pageController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Activity"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () => MyAlertDialog.show(context, "onPressed"),
-            )
-          ],
-        ),
-        body: Column(
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Container(
-                padding: EdgeInsets.all(12),
-                child: PageView(
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    TopicCard(),
-                    TopicCard(),
-                    TopicCard(),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: GridView.count(
-                padding: EdgeInsets.only(top: 24, left: 12, right: 12),
-                mainAxisSpacing: 28,
-                crossAxisSpacing: 20,
-                crossAxisCount: 2,
-                children: <Widget>[
-                  CategoryCard(
-                    title: "Training",
-                    color: Color.fromARGB(255, 15, 203, 167),
-                    subText: "Three weekend trip",
-                    price: 289,
-                  ),
-                  CategoryCard(
-                    title: "Subject",
-                    color: Color.fromARGB(255, 245, 99, 88),
-                    subText: "One semester",
-                    price: 1688,
-                  ),
-                  CategoryCard(
-                    title: "Travel",
-                    color: Color.fromARGB(255, 254, 194, 62),
-                    subText: "Three days and two nights",
-                    price: 3568,
-                  ),
-                  CategoryCard(
-                    title: "Other\nActivities",
-                    color: Color.fromARGB(255, 11, 172, 251),
-                    subText: "Research and study",
-                    price: 890,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ));
+      body: PageView(
+        controller: pageController,
+        onPageChanged: (index) {
+          setState(() {
+            this.currentIndex = index;
+          });
+        },
+        children: <Widget>[
+          SchoolScreen(),
+          ActivityScreen(),
+          NewsScreen(),
+          MyScreen(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        fixedColor: Colors.teal,
+        unselectedItemColor: Colors.grey,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            title: const Text("School"),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.local_activity),
+            title: const Text("Activity"),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event),
+            title: const Text("News"),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            title: const Text("My"),
+          ),
+        ],
+        currentIndex: currentIndex,
+        onTap: (index) {
+          pageController.animateToPage(index,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeIn);
+        },
+      ),
+    );
   }
 }
